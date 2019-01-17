@@ -1,5 +1,5 @@
 'use strict'
-
+const { dagNode } = require('./utils')
 class AccessControllerManifest {
   constructor (type, params = {}) {
     this.type = type
@@ -10,8 +10,9 @@ class AccessControllerManifest {
     // TODO: ensure this is a valid multihash
     if (manifestHash.indexOf('/ipfs') === 0) { manifestHash = manifestHash.split('/')[2] }
 
-    const dag = await ipfs.object.get(manifestHash)
-    const { type, params } = JSON.parse(dag.toJSON().data)
+    const dag = await dagNode.read(ipfs, manifestHash, [])
+    const data = JSON.parse(dag)
+    const { type, params } = data.type ? data : { type: 'ipfs', params: { address: manifestHash} }
     return new AccessControllerManifest(type, params)
   }
 
@@ -21,8 +22,8 @@ class AccessControllerManifest {
       params: params
     }
     const buffer = Buffer.from(JSON.stringify(manifest))
-    const dag = await ipfs.object.put(buffer)
-    return dag.toJSON().multihash.toString()
+    const dag = await ipfs.dag.put(buffer)
+    return dag.toBaseEncodedString()
   }
 }
 

@@ -87,11 +87,11 @@ Object.keys(testAPIs).forEach(API => {
         })
         await db2.load()
 
-        dag = await ipfs1.object.get(db.address.root)
-        dbManifest = JSON.parse(dag.toJSON().data)
+        dag = await ipfs1.dag.get(db.address.root)
+        dbManifest = JSON.parse(dag.value)
         const hash = dbManifest.accessController.split('/').pop()
-        const acManifestDag = await ipfs1.object.get(hash)
-        acManifest = JSON.parse(acManifestDag.toJSON().data)
+        const acManifestDag = await ipfs1.dag.get(hash)
+        acManifest = JSON.parse(acManifestDag.value)
       })
 
       it('has the correct access rights after creating the database', async () => {
@@ -150,11 +150,11 @@ Object.keys(testAPIs).forEach(API => {
             await db2.add('hello!!')
             assert.strictEqual('Should not end here', false)
           } catch (e) {
-            err = e.toString()
+            err = e
           }
 
           const res = await db2.iterator().collect().map(e => e.payload.value)
-          assert.strictEqual(err, `Error: Could not append entry, key "${db2.identity.id}" is not allowed to write to the log`)
+          assert.strictEqual(err.message, `Could not append entry, key "${db2.identity.id}" is not allowed to write to the log`)
           assert.deepStrictEqual(res.includes(e => e === 'hello!!'), false)
         })
       })

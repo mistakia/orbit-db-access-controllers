@@ -1,7 +1,7 @@
 'use strict'
 
 const AccessController = require('./access-controller-interface')
-
+const { dagNode } = require('./utils')
 const type = 'ipfs'
 
 class IPFSAccessController extends AccessController {
@@ -21,7 +21,8 @@ class IPFSAccessController extends AccessController {
 
   async canAppend (entry, identityProvider) {
     // Allow if access list contain the writer's publicKey or is '*'
-    if (this.write.includes(entry.identity.publicKey) ||
+    const publicKey = entry.v === 0 ? entry.key : entry.identity.publicKey
+    if (this.write.includes(publicKey) ||
       this.write.includes('*')) {
       return true
     }
@@ -34,24 +35,27 @@ class IPFSAccessController extends AccessController {
     if (address.indexOf('/ipfs') === 0) { address = address.split('/')[2] }
 
     try {
-      const dag = await this._ipfs.object.get(address)
-      this._write = JSON.parse(dag.toJSON().data)
+      // const dag = await this._ipfs.object.get(address)
+      // this._write = JSON.parse(dag.toJSON().data)
+      const dag = await this._ipfs.dag.get(address)
+      const data = JSON.parse(dag.value)
+      this._write = data.write ? data.write : data
     } catch (e) {
       console.log('IPFSAccessController.load ERROR:', e)
     }
   }
 
   async save () {
-    let hash
+    let cid
     try {
       const access = JSON.stringify(this.write, null, 2)
-      const dag = await this._ipfs.object.put(Buffer.from(access))
-      hash = dag.toJSON().multihash.toString()
+      const dag = await this._ipfs.dag.put(Buffer.from(access))
+      cid = dag.toBaseEncodedString()
     } catch (e) {
       console.log('IPFSAccessController.save ERROR:', e)
     }
     // return the manifest data
-    return { address: hash }
+    return { address: cid }
   }
 
   static async create (orbitdb, options = {}) {
