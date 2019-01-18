@@ -12,7 +12,7 @@ class AccessControllerManifest {
 
     const dag = await dagNode.read(ipfs, manifestHash, [])
     const data = JSON.parse(dag)
-    const { type, params } = data.type ? data : { type: 'ipfs', params: { address: manifestHash} }
+    const { type, params } = data.type ? data : { type: 'ipfs', params: { address: manifestHash } }
     return new AccessControllerManifest(type, params)
   }
 

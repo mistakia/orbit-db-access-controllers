@@ -1,7 +1,6 @@
 'use strict'
 
 const AccessController = require('./access-controller-interface')
-const { dagNode } = require('./utils')
 const type = 'ipfs'
 
 class IPFSAccessController extends AccessController {
