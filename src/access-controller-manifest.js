@@ -11,7 +11,7 @@ class AccessControllerManifest {
     if (manifestHash.indexOf('/ipfs') === 0) { manifestHash = manifestHash.split('/')[2] }
 
     const data = await dagNode.read(ipfs, manifestHash)
-    const { type, params } = data.type ? data : { type: 'ipfs', params: { address: manifestHash } }
+    const { type, params } = data.type ? data : { type: 'ipfs', params: { address: manifestHash } } // check data shape for backwards-compatibility
     return new AccessControllerManifest(type, params)
   }
 
