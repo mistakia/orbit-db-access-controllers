@@ -28,15 +28,13 @@
   },
   "homepage": "https://github.com/orbitdb/orbit-db-access-controllers#readme",
   "dependencies": {
-    "cids": "^0.5.7",
-    "ipld-dag-pb": "^0.15.2",
-    "p-map-series": "^1.0.0",
-    "pify": "^4.0.1"
+    "orbit-db-io": "github:orbitdb/orbit-db-io",
+    "p-map-series": "^1.0.0"
   },
   "devDependencies": {
     "@colony/purser-software": "^1.1.2",
     "datastore-level": "~0.10.0",
-    "ganache-cli": "^6.1.8",
+    "ganache-cli": "^6.3.0",
     "go-ipfs-dep": "^0.4.18",
     "ipfs": "^0.34.0",
     "ipfs-repo": "^0.26.1",
@@ -46,7 +44,7 @@
     "orbit-db-identity-provider": "github:orbitdb/orbit-db-identity-provider",
     "orbit-db-keystore": "github:orbitdb/orbit-db-keystore",
     "standard": "^12.0.1",
-    "web3": "~1.0.0-beta.36"
+    "web3": "^1.0.0-beta.37"
   },
   "standard": {
     "env": [

@@ -1,5 +1,5 @@
 'use strict'
-
+const dagNode = require('orbit-db-io')
 const AccessController = require('./access-controller-interface')
 const type = 'ipfs'
 
@@ -34,11 +34,8 @@ class IPFSAccessController extends AccessController {
     if (address.indexOf('/ipfs') === 0) { address = address.split('/')[2] }
 
     try {
-      // const dag = await this._ipfs.object.get(address)
-      // this._write = JSON.parse(dag.toJSON().data)
-      const dag = await this._ipfs.dag.get(address)
-      const data = JSON.parse(dag.value)
-      this._write = data.write ? data.write : data
+      const access = await dagNode.read(this._ipfs, address)
+      this._write = access.write
     } catch (e) {
       console.log('IPFSAccessController.load ERROR:', e)
     }
@@ -47,9 +44,7 @@ class IPFSAccessController extends AccessController {
   async save () {
     let cid
     try {
-      const access = JSON.stringify(this.write, null, 2)
-      const dag = await this._ipfs.dag.put(Buffer.from(access))
-      cid = dag.toBaseEncodedString()
+      cid = await dagNode.write(this._ipfs, 'dag-cbor', { write: this.write })
     } catch (e) {
       console.log('IPFSAccessController.save ERROR:', e)
     }
