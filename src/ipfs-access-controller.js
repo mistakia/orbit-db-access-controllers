@@ -45,8 +45,8 @@ class IPFSAccessController extends AccessController {
     let hash
     try {
       const access = JSON.stringify(this.write, null, 2)
-      const dag = await this._ipfs.object.put(Buffer.from(access))
-      hash = dag.toJSON().multihash.toString()
+      const cid = await this._ipfs.object.put(Buffer.from(access))
+      hash = cid.toBaseEncodedString()
     } catch (e) {
       console.log('IPFSAccessController.save ERROR:', e)
     }

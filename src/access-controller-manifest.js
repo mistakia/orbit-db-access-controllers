@@ -21,8 +21,8 @@ class AccessControllerManifest {
       params: params
     }
     const buffer = Buffer.from(JSON.stringify(manifest))
-    const dag = await ipfs.object.put(buffer)
-    return dag.toJSON().multihash.toString()
+    const cid = await ipfs.object.put(buffer)
+    return cid.toBaseEncodedString()
   }
 }
 
